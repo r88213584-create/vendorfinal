@@ -1,0 +1,625 @@
+{
+  "paytrust-partner.com": {
+    "label": "Payments vendor (deterministic demo target)",
+    "findings": [
+      {
+        "id": "f-hibp-1",
+        "source": "hibp",
+        "title": "4 employee credentials exposed in breaches",
+        "description": "payroll@paytrust-partner.com, admin@..., ceo@... found in LinkedIn (2021), MyFitnessPal (2018), Collection#1.",
+        "severity": "high",
+        "evidence": {"breaches": ["LinkedIn 2021", "MyFitnessPal 2018", "Collection#1"], "count": 4},
+        "tag": "leaked_credentials"
+      },
+      {
+        "id": "f-shodan-1",
+        "source": "shodan",
+        "title": "Redis port 6379 exposed to the public internet",
+        "description": "Unauthenticated Redis instance on 203.0.113.22:6379. Contains session tokens.",
+        "severity": "critical",
+        "evidence": {"port": 6379, "product": "Redis 6.2.6", "auth": false},
+        "tag": "open_database_port"
+      },
+      {
+        "id": "f-tls-1",
+        "source": "tls",
+        "title": "TLS 1.0 enabled on customer-facing API",
+        "description": "api.paytrust-partner.com negotiates TLS 1.0. Deprecated and known-vulnerable.",
+        "severity": "medium",
+        "evidence": {"min_tls": "1.0", "cipher": "TLS_RSA_WITH_3DES_EDE_CBC_SHA"},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "f-vt-1",
+        "source": "virustotal",
+        "title": "Domain flagged by 3/90 vendors as suspicious",
+        "description": "Two URL scanners report phishing look-alike domain activity.",
+        "severity": "medium",
+        "evidence": {"malicious": 0, "suspicious": 3, "harmless": 87},
+        "tag": "breach_history"
+      },
+      {
+        "id": "f-dns-1",
+        "source": "dns",
+        "title": "SPF record missing; DMARC policy: none",
+        "description": "Email spoofing protection absent.",
+        "severity": "low",
+        "evidence": {"spf": null, "dmarc": "none"},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "f-crt-1",
+        "source": "crt.sh",
+        "title": "18 subdomains discovered via CT logs",
+        "description": "Including `old-admin.paytrust-partner.com` (HTTP 200, no auth).",
+        "severity": "medium",
+        "evidence": {"subdomains": 18, "exposed_admin": true},
+        "tag": "exposed_pii_endpoint"
+      },
+      {
+        "id": "f-nuclei-1",
+        "source": "nuclei",
+        "title": "CVE-2023-46604 (Apache ActiveMQ RCE) signature detected",
+        "description": "ProjectDiscovery nuclei matched http-cve-2023-46604 on mq.paytrust-partner.com.",
+        "severity": "critical",
+        "evidence": {"template": "CVE-2023-46604", "matcher": "status+body", "host": "mq.paytrust-partner.com"},
+        "tag": "cve_exposure"
+      },
+      {
+        "id": "f-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "Privacy policy lacks DPDP §5 notice elements",
+        "description": "No mention of DPO, grievance channel or purposes in vendor's privacy policy.",
+        "severity": "medium",
+        "evidence": {"elements_found": ["purpose"], "elements_missing": ["dpo", "grievance", "retention"]},
+        "tag": "missing_notice"
+      },
+      {
+        "id": "f-dpdp-2",
+        "source": "dpdp-rule",
+        "title": "No published grievance officer (§8(8))",
+        "description": "No grievance-officer contact at /privacy or in app footer.",
+        "severity": "medium",
+        "evidence": {"probed_paths": ["/privacy", "/grievance", "/contact"]},
+        "tag": "no_grievance"
+      }
+    ]
+  },
+  "shopquick-vendor.com": {
+    "label": "E-commerce logistics vendor",
+    "findings": [
+      {
+        "id": "s-hibp-1",
+        "source": "hibp",
+        "title": "2 employee credentials in Collection#1",
+        "description": "dev@shopquick-vendor.com and ops@... found in Collection#1 breach.",
+        "severity": "medium",
+        "evidence": {"count": 2},
+        "tag": "leaked_credentials"
+      },
+      {
+        "id": "s-shodan-1",
+        "source": "shodan",
+        "title": "Elasticsearch 9200 exposed with no authentication",
+        "description": "Publicly accessible Elasticsearch index `orders` with 2.1M documents.",
+        "severity": "critical",
+        "evidence": {"port": 9200, "docs": 2100000},
+        "tag": "open_database_port"
+      },
+      {
+        "id": "s-crt-1",
+        "source": "crt.sh",
+        "title": "47 subdomains in CT logs",
+        "description": "Includes staging.* and test.* still serving production data.",
+        "severity": "medium",
+        "evidence": {"subdomains": 47},
+        "tag": "exposed_pii_endpoint"
+      },
+      {
+        "id": "s-nuclei-1",
+        "source": "nuclei",
+        "title": "CVE-2021-44228 (Log4Shell) detected on job-portal.shopquick-vendor.com",
+        "description": "Nuclei template cve-2021-44228 matched.",
+        "severity": "critical",
+        "evidence": {"template": "CVE-2021-44228"},
+        "tag": "cve_exposure"
+      },
+      {
+        "id": "s-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "Cross-border transfer to unlisted jurisdiction",
+        "description": "Data flows to ap-southeast-1 (Singapore) without §16 notification.",
+        "severity": "high",
+        "evidence": {"region": "ap-southeast-1"},
+        "tag": "cross_border_transfer"
+      }
+    ]
+  },
+  "healthbuddy-partner.com": {
+    "label": "Healthtech partner handling sensitive PII",
+    "findings": [
+      {
+        "id": "h-hibp-1",
+        "source": "hibp",
+        "title": "6 doctor accounts in breach corpora",
+        "description": "Six provider accounts found across 2 breaches.",
+        "severity": "high",
+        "evidence": {"count": 6},
+        "tag": "leaked_credentials"
+      },
+      {
+        "id": "h-tls-1",
+        "source": "tls",
+        "title": "Self-signed certificate on api.healthbuddy-partner.com",
+        "description": "Cert not chained to a public CA; MITM possible.",
+        "severity": "high",
+        "evidence": {"issuer": "self-signed"},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "h-nuclei-1",
+        "source": "nuclei",
+        "title": "Exposed .git directory",
+        "description": "Nuclei matched git-config disclosure on main site.",
+        "severity": "high",
+        "evidence": {"template": "exposed-git-config"},
+        "tag": "misconfig_exposure"
+      },
+      {
+        "id": "h-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "Children's data accepted without parental verification (§9)",
+        "description": "Paediatrics module collects minors' data with a checkbox only.",
+        "severity": "critical",
+        "evidence": {"age_gate": "checkbox_only"},
+        "tag": "childrens_data_unrestricted"
+      },
+      {
+        "id": "h-dpdp-2",
+        "source": "dpdp-rule",
+        "title": "No DPO appointed (§10)",
+        "description": "Vendor does not list DPO; by patient volume likely classified as SDF.",
+        "severity": "medium",
+        "evidence": {},
+        "tag": "no_dpo"
+      }
+    ]
+  },
+  "databridge-cloud.com": {
+    "label": "Cloud storage vendor with cross-border data flows",
+    "findings": [
+      {
+        "id": "d-shodan-1",
+        "source": "shodan",
+        "title": "MongoDB 27017 exposed, no authentication",
+        "description": "Unauthenticated MongoDB instance with 840K customer records cached in RAM.",
+        "severity": "critical",
+        "evidence": {"port": 27017, "product": "MongoDB 6.0", "records_cached": 840000},
+        "tag": "open_database_port"
+      },
+      {
+        "id": "d-nuclei-1",
+        "source": "nuclei",
+        "title": "AWS S3 bucket publicly readable",
+        "description": "nuclei matched `aws-s3-bucket-findings` on backups.databridge-cloud.com.",
+        "severity": "critical",
+        "evidence": {"template": "aws-s3-bucket-findings", "bucket": "databridge-backups-prod"},
+        "tag": "misconfig_exposure"
+      },
+      {
+        "id": "d-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "Primary storage region is us-east-1 (unlisted jurisdiction)",
+        "description": "Personal data of Indian users stored in the United States without §16 notification.",
+        "severity": "high",
+        "evidence": {"region": "us-east-1"},
+        "tag": "cross_border_transfer"
+      },
+      {
+        "id": "d-dpdp-2",
+        "source": "dpdp-rule",
+        "title": "Retention policy says 'indefinite' (§8(7))",
+        "description": "Terms retain user data 'as long as the account exists' with no post-closure purge.",
+        "severity": "medium",
+        "evidence": {"retention_days": null},
+        "tag": "retention_excess"
+      },
+      {
+        "id": "d-hibp-1",
+        "source": "hibp",
+        "title": "3 engineering accounts in Collection#1 + LinkedIn 2021",
+        "description": "sre@databridge-cloud.com, devops@..., admin@... exposed.",
+        "severity": "medium",
+        "evidence": {"count": 3},
+        "tag": "leaked_credentials"
+      },
+      {
+        "id": "d-dpdp-3",
+        "source": "dpdp-rule",
+        "title": "No data-processor agreement (DPA) referenced in contract",
+        "description": "Master agreement does not reference §8(4) purpose-limitation or sub-processor controls.",
+        "severity": "high",
+        "evidence": {"dpa_present": false},
+        "tag": "missing_dpa"
+      }
+    ]
+  },
+  "cleanpay-gateway.com": {
+    "label": "Payments vendor with mature security posture (safe baseline)",
+    "findings": [
+      {
+        "id": "cp-crt-1",
+        "source": "crt.sh",
+        "title": "4 subdomains visible in CT logs (all production)",
+        "description": "Only production hostnames in Certificate Transparency logs; no stale staging or internal hosts leaked.",
+        "severity": "low",
+        "evidence": {"subdomains": 4, "stale": 0, "internal_exposed": false},
+        "tag": "exposed_pii_endpoint"
+      },
+      {
+        "id": "cp-dns-1",
+        "source": "dns",
+        "title": "DMARC policy is 'quarantine' not 'reject'",
+        "description": "SPF and DKIM are valid; DMARC enforcement could be stronger (p=reject recommended for payments vendors).",
+        "severity": "low",
+        "evidence": {"spf": "v=spf1 include:_spf.cleanpay-gateway.com -all", "dmarc": "quarantine", "dkim": true},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "cp-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "Minor §6 data-minimisation observation",
+        "description": "Checkout form collects full date-of-birth when only year-of-birth is required for fraud scoring.",
+        "severity": "low",
+        "evidence": {"field": "date_of_birth", "minimal_required": "year_of_birth"},
+        "tag": "missing_notice"
+      }
+    ]
+  },
+  "google-cloud-vendor.com": {
+    "label": "Enterprise cloud vendor — strong security posture (SAFE)",
+    "category": "strong",
+    "findings": [
+      {
+        "id": "gc-crt-1",
+        "source": "crt.sh",
+        "title": "12 subdomains in CT logs (all production)",
+        "description": "Only production hostnames visible. Wildcard cert in use.",
+        "severity": "low",
+        "evidence": {"subdomains": 12, "stale": 0, "internal_exposed": false},
+        "tag": "exposed_pii_endpoint"
+      },
+      {
+        "id": "gc-dns-1",
+        "source": "dns",
+        "title": "DMARC policy is 'reject' — excellent email security",
+        "description": "SPF, DKIM, DMARC all properly configured with p=reject.",
+        "severity": "low",
+        "evidence": {"spf": "v=spf1 include:_spf.google.com -all", "dmarc": "reject", "dkim": true},
+        "tag": "weak_tls"
+      }
+    ]
+  },
+  "microsoft-enterprise.com": {
+    "label": "Enterprise software vendor — strong security (SAFE)",
+    "category": "strong",
+    "findings": [
+      {
+        "id": "me-crt-1",
+        "source": "crt.sh",
+        "title": "8 subdomains in CT logs (well-managed)",
+        "description": "Clean CT log footprint. No stale or internal hosts exposed.",
+        "severity": "low",
+        "evidence": {"subdomains": 8, "stale": 0},
+        "tag": "exposed_pii_endpoint"
+      },
+      {
+        "id": "me-dns-1",
+        "source": "dns",
+        "title": "DMARC policy is 'quarantine' — good email hygiene",
+        "description": "SPF and DKIM valid. DMARC could be upgraded to reject.",
+        "severity": "low",
+        "evidence": {"spf": "valid", "dmarc": "quarantine", "dkim": true},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "me-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "Minor §6 data-minimisation observation",
+        "description": "Registration collects job title when only company name is needed.",
+        "severity": "low",
+        "evidence": {"field": "job_title"},
+        "tag": "missing_notice"
+      }
+    ]
+  },
+  "yahoo-legacy-services.com": {
+    "label": "Legacy web services vendor — BREACHED (critical)",
+    "category": "breached",
+    "findings": [
+      {
+        "id": "yl-hibp-1",
+        "source": "hibp",
+        "title": "3 billion accounts compromised in 2013-2014 breaches",
+        "description": "Largest data breach in history. Employee and user credentials widely available on dark web.",
+        "severity": "critical",
+        "evidence": {"breaches": ["Yahoo 2013 (3B accounts)", "Yahoo 2014 (500M accounts)"], "count": 3000000000},
+        "tag": "leaked_credentials"
+      },
+      {
+        "id": "yl-shodan-1",
+        "source": "shodan",
+        "title": "Legacy SMTP server with SSLv3 still active",
+        "description": "mail-legacy.yahoo-legacy-services.com negotiates SSLv3. POODLE-vulnerable.",
+        "severity": "critical",
+        "evidence": {"port": 465, "protocol": "SSLv3", "vulnerability": "POODLE"},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "yl-vt-1",
+        "source": "virustotal",
+        "title": "Domain flagged by 7/90 security vendors",
+        "description": "Multiple URL scanners flag phishing and malware distribution activity.",
+        "severity": "high",
+        "evidence": {"malicious": 5, "suspicious": 2, "harmless": 83},
+        "tag": "breach_history"
+      },
+      {
+        "id": "yl-tls-1",
+        "source": "tls",
+        "title": "TLS 1.0 and weak RC4 cipher still negotiated",
+        "description": "API endpoints negotiate TLS 1.0 with RC4-SHA. Known-broken encryption.",
+        "severity": "critical",
+        "evidence": {"min_tls": "1.0", "cipher": "TLS_RSA_WITH_RC4_128_SHA"},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "yl-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "No reasonable security safeguards (§8(5))",
+        "description": "Historical breach + legacy encryption + no MFA = systemic §8(5) failure.",
+        "severity": "critical",
+        "evidence": {"violations": ["massive_breach", "legacy_tls", "no_mfa"]},
+        "tag": "reasonable_security_safeguards"
+      },
+      {
+        "id": "yl-dpdp-2",
+        "source": "dpdp-rule",
+        "title": "Breach notification timeline violated (§8(6))",
+        "description": "2013 breach was not disclosed until 2016 — 3 years past any reasonable notification window.",
+        "severity": "critical",
+        "evidence": {"breach_year": 2013, "disclosure_year": 2016, "delay_years": 3},
+        "tag": "breach_notification_missed"
+      },
+      {
+        "id": "yl-dpdp-3",
+        "source": "dpdp-rule",
+        "title": "Cross-border transfer without adequate safeguards (§16)",
+        "description": "Data processed across 30+ international jurisdictions without DPIA.",
+        "severity": "high",
+        "evidence": {"regions": ["us-east-1", "eu-west-1", "ap-southeast-1"], "dpia_filed": false},
+        "tag": "cross_border_transfer"
+      }
+    ]
+  },
+  "equifax-analytics.com": {
+    "label": "Credit analytics vendor — BREACHED (critical)",
+    "category": "breached",
+    "findings": [
+      {
+        "id": "eq-hibp-1",
+        "source": "hibp",
+        "title": "147 million records exposed in 2017 breach",
+        "description": "SSNs, birth dates, addresses, and driver's license numbers exposed via Apache Struts vulnerability.",
+        "severity": "critical",
+        "evidence": {"breaches": ["Equifax 2017 (147M records)"], "count": 147000000, "data_types": ["SSN", "DOB", "address", "drivers_license"]},
+        "tag": "leaked_credentials"
+      },
+      {
+        "id": "eq-nuclei-1",
+        "source": "nuclei",
+        "title": "CVE-2017-5638 (Apache Struts RCE) — original breach vector",
+        "description": "The exact vulnerability that caused the 2017 breach. Nuclei template matched on legacy endpoint.",
+        "severity": "critical",
+        "evidence": {"template": "CVE-2017-5638", "host": "legacy-api.equifax-analytics.com"},
+        "tag": "cve_exposure"
+      },
+      {
+        "id": "eq-shodan-1",
+        "source": "shodan",
+        "title": "PostgreSQL 5432 exposed with default credentials",
+        "description": "Unauthenticated PostgreSQL instance with 2.3M credit records.",
+        "severity": "critical",
+        "evidence": {"port": 5432, "product": "PostgreSQL 14", "auth": false, "records": 2300000},
+        "tag": "open_database_port"
+      },
+      {
+        "id": "eq-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "No reasonable security safeguards (§8(5))",
+        "description": "Unpatched critical CVE + exposed database + massive breach = complete §8(5) failure.",
+        "severity": "critical",
+        "evidence": {"violations": ["unpatched_cve", "exposed_db", "massive_breach"]},
+        "tag": "reasonable_security_safeguards"
+      },
+      {
+        "id": "eq-dpdp-2",
+        "source": "dpdp-rule",
+        "title": "Sensitive personal data processed without adequate consent (§8(1))",
+        "description": "Credit scores and financial data processed without DPDP-compliant purpose limitation.",
+        "severity": "critical",
+        "evidence": {"data_types": ["credit_score", "ssn", "financial_history"]},
+        "tag": "purpose_limitation"
+      },
+      {
+        "id": "eq-dpdp-3",
+        "source": "dpdp-rule",
+        "title": "No DPO appointed despite processing sensitive data (§10)",
+        "description": "Vendor handles sensitive personal data at scale but has no appointed Data Protection Officer.",
+        "severity": "high",
+        "evidence": {"dpo_appointed": false, "data_volume": "147M+"},
+        "tag": "no_dpo"
+      }
+    ]
+  },
+  "logix-crm-india.com": {
+    "label": "Worst-case CRM vendor — maximum DPDP exposure (critical)",
+    "findings": [
+      {
+        "id": "lc-shodan-1",
+        "source": "shodan",
+        "title": "MongoDB 27017 exposed with NO authentication",
+        "description": "Unauthenticated MongoDB instance on 203.0.113.77:27017. Full read/write. Contains 1.4M customer PII records including PAN + Aadhaar last-4.",
+        "severity": "critical",
+        "evidence": {"port": 27017, "product": "MongoDB 5.0", "auth": false, "records": 1400000, "pii": ["pan", "aadhaar_last4", "phone", "email"]},
+        "tag": "open_database_port"
+      },
+      {
+        "id": "lc-hibp-1",
+        "source": "hibp",
+        "title": "Admin credentials leaked across 3 breaches",
+        "description": "admin@logix-crm-india.com, root@..., support@... found in Collection#1, LinkedIn 2021, and Dropbox 2012. Same password hash reused across all three.",
+        "severity": "critical",
+        "evidence": {"breaches": ["Collection#1", "LinkedIn 2021", "Dropbox 2012"], "count": 3, "hash_reuse": true},
+        "tag": "leaked_credentials"
+      },
+      {
+        "id": "lc-vt-1",
+        "source": "virustotal",
+        "title": "Domain flagged malicious by 4/90 security vendors",
+        "description": "Four URL reputation engines mark logix-crm-india.com as phishing/malware distribution. Investigation recommended.",
+        "severity": "high",
+        "evidence": {"malicious": 4, "suspicious": 2, "harmless": 84},
+        "tag": "breach_history"
+      },
+      {
+        "id": "lc-tls-1",
+        "source": "tls",
+        "title": "Weak TLS configuration (TLS 1.0 + 3DES)",
+        "description": "api.logix-crm-india.com still negotiates TLS 1.0 with TLS_RSA_WITH_3DES_EDE_CBC_SHA. Known-vulnerable to SWEET32 / BEAST.",
+        "severity": "medium",
+        "evidence": {"min_tls": "1.0", "cipher": "TLS_RSA_WITH_3DES_EDE_CBC_SHA"},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "lc-crt-1",
+        "source": "crt.sh",
+        "title": "32 subdomains in CT logs — many stale / internal",
+        "description": "Includes admin-old.*, test-prod.*, internal-crm.*, dev-apis.* — all serving production data with HTTP 200.",
+        "severity": "medium",
+        "evidence": {"subdomains": 32, "stale": 11, "internal_exposed": true},
+        "tag": "exposed_pii_endpoint"
+      },
+      {
+        "id": "lc-dns-1",
+        "source": "dns",
+        "title": "Missing DMARC record entirely",
+        "description": "No DMARC policy published. Domain is trivially spoofable for phishing that pivots into the CRM.",
+        "severity": "low",
+        "evidence": {"spf": "v=spf1 +all", "dmarc": null},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "lc-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "No reasonable security safeguards (§8(5))",
+        "description": "Open MongoDB + leaked admin creds + weak TLS jointly constitute failure of §8(5) obligation to deploy reasonable security safeguards.",
+        "severity": "critical",
+        "evidence": {"violations": ["open_db", "credential_leak", "weak_tls"]},
+        "tag": "reasonable_security_safeguards"
+      },
+      {
+        "id": "lc-dpdp-2",
+        "source": "dpdp-rule",
+        "title": "Data-breach not reported to DPB within prescribed window (§8(6))",
+        "description": "Open-database exposure has persisted in Shodan for 47 days with no disclosure to the Data Protection Board or to affected Data Principals.",
+        "severity": "critical",
+        "evidence": {"days_exposed": 47, "reported_to_dpb": false, "notified_principals": false},
+        "tag": "breach_notification_missed"
+      },
+      {
+        "id": "lc-dpdp-3",
+        "source": "dpdp-rule",
+        "title": "Cross-border transfer to unlisted jurisdiction (§16)",
+        "description": "Primary replica hosted in us-east-1 and backups in eu-west-1. Neither jurisdiction is listed under the government's §16 notification. No DPIA filed.",
+        "severity": "high",
+        "evidence": {"regions": ["us-east-1", "eu-west-1"], "dpia_filed": false},
+        "tag": "cross_border_transfer"
+      }
+    ]
+  },
+  "apple-enterprise-vendor.com": {
+    "label": "Enterprise hardware & services vendor — strong security posture (SAFE)",
+    "category": "strong",
+    "findings": [
+      {
+        "id": "ae-crt-1",
+        "source": "crt.sh",
+        "title": "6 subdomains in CT logs (all production, well-managed)",
+        "description": "Minimal CT log footprint. All entries are active production hosts with valid certificates.",
+        "severity": "low",
+        "evidence": {"subdomains": 6, "stale": 0, "internal_exposed": false},
+        "tag": "exposed_pii_endpoint"
+      },
+      {
+        "id": "ae-dns-1",
+        "source": "dns",
+        "title": "DMARC policy is 'reject' with RUA reporting — excellent",
+        "description": "SPF, DKIM, DMARC all configured with p=reject and aggregate reporting enabled.",
+        "severity": "low",
+        "evidence": {"spf": "v=spf1 include:_spf.apple.com -all", "dmarc": "reject", "dkim": true, "rua": true},
+        "tag": "weak_tls"
+      }
+    ]
+  },
+  "tcs-outsource-vendor.com": {
+    "label": "IT outsourcing vendor — mixed security posture (mid-level)",
+    "findings": [
+      {
+        "id": "tc-hibp-1",
+        "source": "hibp",
+        "title": "5 employee accounts in breach corpora",
+        "description": "dev@tcs-outsource-vendor.com and 4 others found in LinkedIn 2021 and Collection#1.",
+        "severity": "high",
+        "evidence": {"breaches": ["LinkedIn 2021", "Collection#1"], "count": 5},
+        "tag": "leaked_credentials"
+      },
+      {
+        "id": "tc-tls-1",
+        "source": "tls",
+        "title": "TLS 1.1 still negotiated on staging endpoint",
+        "description": "staging-api.tcs-outsource-vendor.com allows TLS 1.1 connections. Deprecated by RFC 8996.",
+        "severity": "medium",
+        "evidence": {"min_tls": "1.1", "endpoint": "staging-api"},
+        "tag": "weak_tls"
+      },
+      {
+        "id": "tc-crt-1",
+        "source": "crt.sh",
+        "title": "22 subdomains in CT logs — 4 stale internal hosts",
+        "description": "dev-portal.*, internal-wiki.*, test-jenkins.*, old-monitoring.* still resolve and return HTTP 200.",
+        "severity": "medium",
+        "evidence": {"subdomains": 22, "stale": 4, "internal_exposed": true},
+        "tag": "exposed_pii_endpoint"
+      },
+      {
+        "id": "tc-dpdp-1",
+        "source": "dpdp-rule",
+        "title": "Cross-border transfer to multiple jurisdictions (§16)",
+        "description": "Service delivery from offices in India, US, UK, Singapore without unified DPIA.",
+        "severity": "high",
+        "evidence": {"regions": ["us-east-1", "eu-west-1", "ap-southeast-1"], "dpia_filed": false},
+        "tag": "cross_border_transfer"
+      },
+      {
+        "id": "tc-dpdp-2",
+        "source": "dpdp-rule",
+        "title": "Sub-processor chain not disclosed (§8(4))",
+        "description": "Primary vendor sub-contracts to 3 undisclosed sub-processors without data principal notification.",
+        "severity": "medium",
+        "evidence": {"sub_processors": 3, "disclosed": false},
+        "tag": "missing_dpa"
+      }
+    ]
+  }
+}
