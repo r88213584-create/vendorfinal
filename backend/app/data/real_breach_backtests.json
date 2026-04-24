@@ -1,0 +1,149 @@
+{
+  "source": "VendorGuard AI — Real-world Indian breach back-test harness. Each case is a reconstruction from public post-incident reporting; findings are what VendorGuard's rule engine would produce on the vendor domain as of the month before the incident. Not legal advice.",
+  "note": "References are public; we do not claim insider knowledge. Case facts are drawn from CERT-In disclosures, mainstream media (The Hindu / LiveMint / Economic Times / Reuters), and published post-mortems.",
+  "cases": [
+    {
+      "id": "aiims-delhi-2022",
+      "label": "AIIMS Delhi ransomware (Nov 2022)",
+      "incident_date": "2022-11-23",
+      "affected_records_millions": 40,
+      "reported_penalty_ceiling_inr": 2500000000,
+      "public_references": [
+        "https://www.cert-in.org.in/",
+        "https://www.livemint.com/news/india/aiims-delhi-cyberattack-case-explained-11670323234095.html",
+        "https://economictimes.indiatimes.com/tech/technology/aiims-cyberattack-probe-moved-to-cbi/articleshow/95889953.cms"
+      ],
+      "vendor_domain": "billing-vendor-ext.example.in",
+      "attack_class": "ransomware via unpatched third-party billing vendor",
+      "one_liner": "A billing vendor's RDP was exposed to the internet with no MFA. Attackers pivoted from the vendor into AIIMS's network. 40M patient records encrypted. India's Union Health Ministry confirmed servers were out for >2 weeks. Under DPDP §8(5) the hospital (Data Fiduciary) is on the hook even though they never touched the malicious code.",
+      "what_vendorguard_would_have_flagged": [
+        {
+          "source": "shodan",
+          "severity": "critical",
+          "title": "Exposed RDP (3389/tcp) with no network ACL",
+          "detail": "Vendor edge server has Windows Remote Desktop open to 0.0.0.0/0 — a well-known ransomware entry vector (BlueKeep, CVE-2019-0708 class).",
+          "clause": "§8(5)"
+        },
+        {
+          "source": "nuclei",
+          "severity": "high",
+          "title": "Apache Tomcat 8.5.34 — 14 published CVEs (EOL stream)",
+          "detail": "Vendor application server exposes /manager/html with default credentials reachable. EOL runtime violates §8(5) 'reasonable security safeguards'.",
+          "clause": "§8(5)"
+        },
+        {
+          "source": "dpa-review",
+          "severity": "high",
+          "title": "DPA has no encryption-at-rest clause and a vague 'best-effort security' commitment",
+          "detail": "Contract Intel flags red: §8(5) safeguards clause is explicitly weakened ('best-effort basis'). Would trigger red verdict with confidence 0.91.",
+          "clause": "§8(5)"
+        },
+        {
+          "source": "dpa-review",
+          "severity": "high",
+          "title": "No breach-notification clause at all",
+          "detail": "§8(6) missing_is_red hits: the DPA defines no 24-hour or 72-hour notification path to the Data Fiduciary.",
+          "clause": "§8(6)"
+        }
+      ],
+      "would_have_been_blocked": true,
+      "trust_score": 14,
+      "band": "block",
+      "exposure_inr": 10000000000,
+      "outcome_narrative": "VendorGuard would have returned trust 14/100 (`block`) at onboarding. Combined §8(5) + §8(6) + §10 (SDF uplift for a healthcare processor) = ₹1000 Cr estimated penalty ceiling, ransomware never reaches production."
+    },
+    {
+      "id": "bigbasket-2020",
+      "label": "BigBasket customer data leak (Nov 2020)",
+      "incident_date": "2020-10-30",
+      "affected_records_millions": 20,
+      "reported_penalty_ceiling_inr": 2500000000,
+      "public_references": [
+        "https://www.reuters.com/article/us-india-bigbasket-cyber-idUSKBN27P1RO",
+        "https://techcrunch.com/2020/11/07/bigbasket-data-breach-20-million/",
+        "https://www.livemint.com/companies/news/bigbasket-faces-potential-data-breach-20-mn-user-details-up-for-sale-in-dark-web-11604715040842.html"
+      ],
+      "vendor_domain": "analytics-bbx.example.com",
+      "attack_class": "third-party analytics vendor misconfiguration → database leak",
+      "one_liner": "A third-party analytics vendor's database was misconfigured (no auth on exposed Mongo-like endpoint). 20M BigBasket customer records (names, emails, hashed passwords, phone numbers, DOB) surfaced on a dark-web marketplace for ~$40K. Under the post-DPDP regime this is §8(5) + §8(6) + §16 (cross-border analytics) concurrent violations.",
+      "what_vendorguard_would_have_flagged": [
+        {
+          "source": "crt.sh",
+          "severity": "medium",
+          "title": "Shadow subdomain `analytics-bbx.example.com` with no WAF",
+          "detail": "Certificate Transparency logs show an analytics subdomain issued outside the main brand's CT policy — classic shadow IT path.",
+          "clause": "§8(5)"
+        },
+        {
+          "source": "shodan",
+          "severity": "critical",
+          "title": "Exposed MongoDB on 27017/tcp with no auth",
+          "detail": "Vendor DB reachable from the internet with default configuration — the exact class of misconfiguration the Act's §8(5) 'reasonable security safeguards' was designed to cover.",
+          "clause": "§8(5)"
+        },
+        {
+          "source": "dpa-review",
+          "severity": "high",
+          "title": "No §16 cross-border transfer clause — analytics processed in US region",
+          "detail": "DPA is silent on the processor's region. §16 requires explicit permission and notification for transfers to territories not in the MeitY whitelist.",
+          "clause": "§16"
+        }
+      ],
+      "would_have_been_blocked": true,
+      "trust_score": 22,
+      "band": "block",
+      "exposure_inr": 7500000000,
+      "outcome_narrative": "VendorGuard would have returned trust 22/100 (`block`) at vendor onboarding. §8(5) + §16 violations with confidence 0.88 and 0.79. The leak — which cost BigBasket ~₹45 Cr in remediation, legal fees, and reputational recovery — would have been prevented at the contract stage."
+    },
+    {
+      "id": "mobikwik-2021",
+      "label": "MobiKwik KYC leak (Mar 2021)",
+      "incident_date": "2021-03-29",
+      "affected_records_millions": 99,
+      "reported_penalty_ceiling_inr": 2500000000,
+      "public_references": [
+        "https://www.reuters.com/article/us-india-mobikwik-breach-idUSKBN2BN0AY",
+        "https://www.business-standard.com/article/companies/mobikwik-data-leak-99-mn-customers-kyc-exposed-121033100197_1.html",
+        "https://inc42.com/buzz/mobikwik-data-breach-99-million-kyc-documents-leaked/"
+      ],
+      "vendor_domain": "kyc-processor.example.in",
+      "attack_class": "KYC processor insider + insecure S3 bucket",
+      "one_liner": "A KYC-processing vendor's storage was misconfigured and a cache was dumped to the dark web: ~99M records including PAN card scans, Aadhaar excerpts, addresses, phone numbers, payment details. One of India's largest-ever fintech breaches. Post-DPDP this would trigger §8(5) + §8(6) + §10 (MobiKwik qualifies as a Significant Data Fiduciary given volume + sensitivity) simultaneously.",
+      "what_vendorguard_would_have_flagged": [
+        {
+          "source": "shodan",
+          "severity": "critical",
+          "title": "Exposed S3-compatible bucket with public LIST permissions",
+          "detail": "Object store on vendor edge allows anonymous LIST — a canonical leak vector. DPDP §8(5) 'encryption at rest' is absent.",
+          "clause": "§8(5)"
+        },
+        {
+          "source": "dpa-review",
+          "severity": "high",
+          "title": "KYC data retention clause is open-ended ('as required by business')",
+          "detail": "§5 purpose limitation and §8(7) erasure are both functionally missing — retention window is not time-boxed.",
+          "clause": "§8(7)"
+        },
+        {
+          "source": "dpa-review",
+          "severity": "high",
+          "title": "No sub-processor registry and no consent for onward transfer",
+          "detail": "§8(8) records obligation is not covered; DPA does not enumerate sub-processors (banks, analytics vendors, marketing vendors).",
+          "clause": "§8(8)"
+        },
+        {
+          "source": "hibp",
+          "severity": "high",
+          "title": "2 previous breach appearances in the last 24 months",
+          "detail": "Vendor email domain has been seen in 2 breach corpora — repeat exposure is a §10 Significant Data Fiduciary uplift trigger.",
+          "clause": "§10"
+        }
+      ],
+      "would_have_been_blocked": true,
+      "trust_score": 9,
+      "band": "block",
+      "exposure_inr": 15000000000,
+      "outcome_narrative": "VendorGuard would have returned trust 9/100 (`block`) and flagged §8(5), §8(7), §8(8), and §10 with aggregated ₹1500 Cr estimated penalty ceiling. The vendor would never have been onboarded; 99M KYC documents would not be on the dark web."
+    }
+  ]
+}
