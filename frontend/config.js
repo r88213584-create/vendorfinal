@@ -27,7 +27,7 @@
   const fromMeta = metaEl ? metaEl.getAttribute('content') : null;
 
   // EDIT ME FOR YOUR PRODUCTION DEPLOY (or leave blank to keep localhost default):
-  window.__VG_API_FALLBACK__ = window.__VG_API_FALLBACK__ || '';
+  window.__VG_API_FALLBACK__ = window.__VG_API_FALLBACK__ || 'https://vendorguard-api.onrender.com';
 
   const candidates = [
     fromQuery,
